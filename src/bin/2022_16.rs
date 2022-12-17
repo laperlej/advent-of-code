@@ -129,7 +129,6 @@ impl Graph {
 
     fn best_elephant_flow(&self) -> i64 {
         (0..u16::MAX/2)
-            .step_by(2)
             .into_par_iter()
             .map(|visited| self.best_flow_helper(visited, 26) + self.best_flow_helper(visited^1, 26))
             .max()
