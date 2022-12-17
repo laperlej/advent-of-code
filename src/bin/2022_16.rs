@@ -122,14 +122,14 @@ impl Graph {
     }
 
     fn best_flow(&self) -> i64 {
-        let visited = 1<<15;
+        let visited = 0;
         self.best_flow_helper(visited, 30)
     }
 
     fn best_elephant_flow(&self) -> i64 {
-        let mut best_flow = 0;
-        for visited in 0..u16::MAX {
-            best_flow = best_flow.max(self.best_flow_helper(visited, 26) + self.best_flow_helper(!visited, 26));
+        let mut best_flow = self.best_flow();
+        for visited in (0..u16::MAX).step_by(2) {
+            best_flow = best_flow.max(self.best_flow_helper(visited, 26) + self.best_flow_helper(!visited >> 1 << 1, 26));
         }
         best_flow
     }
