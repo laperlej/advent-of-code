@@ -1,0 +1,30 @@
+[package]
+name = "aoc"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+debug = true
+
+[rust]
+debuginfo-level = 1
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
+
+[dependencies]
+clap = { version = "4.0.29", features = ["derive"] }
+futures = "0.3.25"
+itertools = "0.10.5"
+ndarray = "0.15.6"
+nom = "7.1.1"
+num-bigint = "0.4.3"
+rayon = "1.6.0"
+regex = "1.7.0"
+reqwest = { version = "0.11.13", features = ["blocking"] }
+tokio = { version = "1.22.0", features = ["macros"] }
+
