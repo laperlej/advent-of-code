@@ -3,6 +3,7 @@ use std::collections::{ VecDeque, HashMap };
 use std::io::Write;
 use ndarray::prelude::*;
 use itertools::Itertools;
+use rayon::prelude::*;
 
 
 #[cfg(test)]
@@ -127,11 +128,12 @@ impl Graph {
     }
 
     fn best_elephant_flow(&self) -> i64 {
-        let mut best_flow = self.best_flow();
-        for visited in (0..u16::MAX/2).step_by(2) {
-            best_flow = best_flow.max(self.best_flow_helper(visited, 26) + self.best_flow_helper(!visited >> 1 << 1, 26));
-        }
-        best_flow
+        (0..u16::MAX/2)
+            .step_by(2)
+            .into_par_iter()
+            .map(|visited| self.best_flow_helper(visited, 26) + self.best_flow_helper(visited^1, 26))
+            .max()
+            .unwrap()
     }
 }
 
