@@ -12,10 +12,6 @@ debuginfo-level = 1
 [dev-dependencies]
 criterion = "0.3"
 
-[[bench]]
-name = "my_benchmark"
-harness = false
-
 [dependencies]
 clap = { version = "4.0.29", features = ["derive"] }
 flamegraph = "0.6.2"

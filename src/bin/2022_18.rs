@@ -134,10 +134,10 @@ fn main() {
     let input = include_str!("../../inputs/2022_18.txt");
     let time = std::time::Instant::now();
     println!("Part 1: {}", part1(input));
-    println!("Time: {}ms", time.elapsed().as_millis());
+    println!("Time: {}us", time.elapsed().as_micros());
     let time = std::time::Instant::now();
     println!("Part 2: {}", part2(input));
-    println!("Time: {}ms", time.elapsed().as_millis());
+    println!("Time: {}us", time.elapsed().as_micros());
 }
 
 
