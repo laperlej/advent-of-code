@@ -104,7 +104,7 @@ impl Graph {
 
     fn best_flow_helper(&self, visited: u16, time: i64) -> i64 {
         let mut best_flow = 0;
-        let mut stack = Vec::new();
+        let mut stack = Vec::with_capacity(100);
         stack.push((visited, 0, time, 0));
         while let Some((visited, node, time, flow)) = stack.pop() {
             for i in 0..self.adj_matrix.nrows() {
@@ -128,11 +128,12 @@ impl Graph {
     }
 
     fn best_elephant_flow(&self) -> i64 {
-        (0..u16::MAX/2)
-            .into_par_iter()
-            .map(|visited| self.best_flow_helper(visited, 26) + self.best_flow_helper(visited^1, 26))
-            .max()
-            .unwrap()
+        (0..u16::MAX/2).into_par_iter()
+            .step_by(2)
+            .filter(|v| v.count_ones() == 7)
+            .map(|visited| { self.best_flow_helper(visited, 26) + self.best_flow_helper(!visited ^ 1, 26)
+            })
+            .max().unwrap()
     }
 }
 
