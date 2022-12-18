@@ -63,9 +63,9 @@ impl FromStr for Grid {
 impl Grid {
     fn sides(&self) -> i64 {
         let mut sides = 0;
-        for x in 1..23 {
-            for y in 1..23 {
-                for z in 1..23 {
+        for x in 1..self.grid.shape()[0]-1 {
+            for y in 1..self.grid.shape()[1]-1 {
+                for z in 1..self.grid.shape()[2]-1 {
                     if self.grid[[x,y,z]] == 1 {
                         if self.grid[[x+1,y,z]] == 0 { sides += 1; }
                         if self.grid[[x-1,y,z]] == 0 { sides += 1; }
@@ -81,9 +81,9 @@ impl Grid {
     }
 
     fn set_vacuum(&mut self) {
-        for x in 1..23 {
-            for y in 1..23 {
-                for z in 1..23 {
+        for x in 1..self.grid.shape()[0]-1 {
+            for y in 1..self.grid.shape()[1]-1 {
+                for z in 1..self.grid.shape()[2]-1 {
                     if self.grid[[x,y,z]] == 0 {
                         self.grid[[x,y,z]] = 2;
                     }
@@ -96,9 +96,9 @@ impl Grid {
         let mut changed = true;
         while changed {
             changed = false;
-            for x in 1..23 {
-                for y in 1..23 {
-                    for z in 1..23 {
+            for x in 1..self.grid.shape()[0]-1 {
+                for y in 1..self.grid.shape()[1]-1 {
+                    for z in 1..self.grid.shape()[2]-1 {
                         if self.grid[[x,y,z]] == 2 &&
                             ( self.grid[[x+1,y,z]] == 0 ||
                                 self.grid[[x-1,y,z]] == 0 ||
