@@ -48,21 +48,21 @@ enum Content {
 
 struct Grid {
     // 0 = air, 1 = lava, 2 = vacuum
-    grid: Array3<Content>
+    grid: [[[Content; 24]; 24]; 24],
 }
 
 impl FromStr for Grid {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut grid = Array3::from_elem((24,24,24), Content::Air);
+        let mut grid = [[[Content::Air; 24]; 24]; 24];
         s.lines().map(|l| 
             l.trim().split(',').collect::<Vec<_>>()
         ).for_each(|v| {
             let x = v[0].parse::<usize>().unwrap();
             let y = v[1].parse::<usize>().unwrap();
             let z = v[2].parse::<usize>().unwrap();
-            grid[[x+1,y+1,z+1]] = Content::Lava;
+            grid[x+1][y+1][z+1] = Content::Lava;
         });
         Ok(Grid { grid })
     }
@@ -71,25 +71,29 @@ impl FromStr for Grid {
 impl Grid {
     fn sides(&self) -> i64 {
         let mut sides = 0;
-        for ((x,y,z), e) in self.grid.indexed_iter() {
-            if *e == Content::Lava {
-                if self.grid[[x+1,y,z]] == Content::Air { sides += 1; }
-                if self.grid[[x-1,y,z]] == Content::Air { sides += 1; }
-                if self.grid[[x,y+1,z]] == Content::Air { sides += 1; }
-                if self.grid[[x,y-1,z]] == Content::Air { sides += 1; }
-                if self.grid[[x,y,z+1]] == Content::Air { sides += 1; }
-                if self.grid[[x,y,z-1]] == Content::Air { sides += 1; }
+        for x in 1..23 {
+            for y in 1..23 {
+                for z in 1..23 {
+                    if self.grid[x][y][z] == Content::Lava {
+                        if self.grid[x+1][y][z] == Content::Air { sides += 1; }
+                        if self.grid[x-1][y][z] == Content::Air { sides += 1; }
+                        if self.grid[x][y+1][z] == Content::Air { sides += 1; }
+                        if self.grid[x][y-1][z] == Content::Air { sides += 1; }
+                        if self.grid[x][y][z+1] == Content::Air { sides += 1; }
+                        if self.grid[x][y][z-1] == Content::Air { sides += 1; }
+                    }
+                }
             }
         }
         sides
     }
 
     fn set_vacuum(&mut self) {
-        for x in 1..self.grid.shape()[0]-1 {
-            for y in 1..self.grid.shape()[1]-1 {
-                for z in 1..self.grid.shape()[2]-1 {
-                    if self.grid[[x,y,z]] == Content::Air {
-                        self.grid[[x,y,z]] = Content::Vacuum;
+        for x in 1..23 {
+            for y in 1..23 {
+                for z in 1..23 {
+                    if self.grid[x][y][z] == Content::Air {
+                        self.grid[x][y][z] = Content::Vacuum;
                     }
                 }
             }
@@ -100,18 +104,18 @@ impl Grid {
         let mut changed = true;
         while changed {
             changed = false;
-            for x in 1..self.grid.shape()[0]-1 {
-                for y in 1..self.grid.shape()[1]-1 {
-                    for z in 1..self.grid.shape()[2]-1 {
-                        if self.grid[[x,y,z]] == Content::Vacuum &&
-                            ( self.grid[[x+1,y,z]] == Content::Air ||
-                                self.grid[[x-1,y,z]] == Content::Air ||
-                                self.grid[[x,y+1,z]] == Content::Air ||
-                                self.grid[[x,y-1,z]] == Content::Air || 
-                                self.grid[[x,y,z+1]] == Content::Air || 
-                                self.grid[[x,y,z-1]] == Content::Air ){
+            for x in 1..23 {
+                for y in 1..23 {
+                    for z in 1..23 {
+                        if self.grid[x][y][z] == Content::Vacuum &&
+                            ( self.grid[x+1][y][z] == Content::Air ||
+                                self.grid[x-1][y][z] == Content::Air ||
+                                self.grid[x][y+1][z] == Content::Air ||
+                                self.grid[x][y-1][z] == Content::Air || 
+                                self.grid[x][y][z+1] == Content::Air || 
+                                self.grid[x][y][z-1] == Content::Air ){
                             changed = true;
-                            self.grid[[x,y,z]] = Content::Air;
+                            self.grid[x][y][z] = Content::Air;
                          }
                     }
                 }
@@ -124,6 +128,7 @@ impl Grid {
 
 fn part1(input: &str) -> i64 {
     let grid: Grid = input.parse().unwrap();
+    //print size of grid
     grid.sides()
 }
 
