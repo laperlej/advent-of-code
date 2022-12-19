@@ -113,6 +113,7 @@ impl Grid {
 }
 
 
+
 fn part1(input: &str) -> i64 {
     let grid: Grid = input.parse().unwrap();
     grid.sides()
@@ -126,14 +127,18 @@ fn part2(input: &str) -> i64 {
     grid.sides()
 }
 
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
+fn day18(c: &mut Criterion) {
+    let input = include_str!("../../inputs/2022_18.txt");
+    c.bench_function("part1", |b| b.iter(|| part1(input)));
+    c.bench_function("part2", |b| b.iter(|| part2(input)));
+}
+
 fn main() {
     let input = include_str!("../../inputs/2022_18.txt");
-    let time = std::time::Instant::now();
     println!("Part 1: {}", part1(input));
-    println!("Time: {}us", time.elapsed().as_micros());
-    let time = std::time::Instant::now();
     println!("Part 2: {}", part2(input));
-    println!("Time: {}us", time.elapsed().as_micros());
+    day18(&mut Criterion::default());
 }
 
 
