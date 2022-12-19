@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use criterion::Criterion;
 use std::fmt::Display;
 use std::collections::{ VecDeque, HashMap };
 use std::io::Write;
@@ -127,7 +128,6 @@ fn part2(input: &str) -> i64 {
     grid.sides()
 }
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
 fn day18(c: &mut Criterion) {
     let input = include_str!("../../inputs/2022_18.txt");
     c.bench_function("part1", |b| b.iter(|| part1(input)));
