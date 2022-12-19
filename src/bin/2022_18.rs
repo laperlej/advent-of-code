@@ -71,6 +71,9 @@ impl FromStr for Grid {
 impl Grid {
     fn sides(&self) -> i64 {
         let mut sides = 0;
+        assert_eq!(self.grid.len(), 24);
+        assert_eq!(self.grid[0].len(), 24);
+        assert_eq!(self.grid[0][0].len(), 24);
         for x in 1..23 {
             for y in 1..23 {
                 for z in 1..23 {
@@ -89,6 +92,9 @@ impl Grid {
     }
 
     fn set_vacuum(&mut self) {
+        assert_eq!(self.grid.len(), 24);
+        assert_eq!(self.grid[0].len(), 24);
+        assert_eq!(self.grid[0][0].len(), 24);
         for x in 1..23 {
             for y in 1..23 {
                 for z in 1..23 {
@@ -102,6 +108,9 @@ impl Grid {
 
     fn air_expansion(&mut self) {
         let mut changed = true;
+        assert_eq!(self.grid.len(), 24);
+        assert_eq!(self.grid[0].len(), 24);
+        assert_eq!(self.grid[0][0].len(), 24);
         while changed {
             changed = false;
             for x in 1..23 {
