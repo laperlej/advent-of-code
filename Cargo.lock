@@ -41,6 +41,7 @@ dependencies = [
  "ndarray",
  "nom",
  "num-bigint",
+ "num-complex",
  "rayon",
  "regex",
  "reqwest",
