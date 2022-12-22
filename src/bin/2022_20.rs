@@ -5,7 +5,6 @@ use itertools::Itertools;
 use rayon::prelude::*;
 use std::cmp::Ordering;
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -106,7 +105,6 @@ impl NumList {
                 }
                 i+=1;
             }
-            println!("{:?}", self.nums);
             nb_mixes -= 1;
             i = 0;
         }
@@ -159,9 +157,11 @@ fn part2(input: &str) -> i64 {
 fn main() {
     let input = include_str!("../../inputs/2022_20.txt");
     let time = std::time::Instant::now();
+    println!("Part 1: {}", question1(input));
     println!("Part 1: {}", part1(input));
     println!("Time: {}ms", time.elapsed().as_millis());
     let time = std::time::Instant::now();
+    println!("Part 2: {}", question2(input));
     println!("Part 2: {}", part2(input));
     println!("Time: {}ms", time.elapsed().as_millis());
 }

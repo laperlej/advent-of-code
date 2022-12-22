@@ -4,6 +4,7 @@ use std::io::Write;
 use itertools::Itertools;
 use rayon::prelude::*;
 use std::cmp::Ordering;
+use num_complex::Complex64;
 
 
 #[cfg(test)]
@@ -42,8 +43,8 @@ hmdt: 32"
 struct Elf {
     name: String,
     waiting_on: Vec<String>,
-    value: Option<i64>,
-    operation: Option<Box<dyn Fn(i64, i64) -> i64>>,
+    value: Option<Complex64>,
+    operation: Option<Box<dyn Fn(Complex64, Complex64) -> Complex64>>,
 }
 
 impl FromStr for Elf {
@@ -53,7 +54,7 @@ impl FromStr for Elf {
         let mut parts = s.trim().split(' ');
         let name = parts.next().unwrap().to_string().replace(':', "");
         let value_or_elf1 = parts.next().unwrap();
-        let value_result = value_or_elf1.parse::<i64>();
+        let value_result = value_or_elf1.parse::<Complex64>();
         let value = match value_result  {
             Ok(n) => Some(n),
             Err(_) => None
@@ -62,7 +63,7 @@ impl FromStr for Elf {
             return Ok(Elf { name, waiting_on: Vec::new(), value, operation: None });
         }
         let elf1 = value_or_elf1.to_string();
-        let operation: Option<Box<dyn Fn(i64, i64) -> i64>> = match parts.next() {
+        let operation: Option<Box<dyn Fn(Complex64, Complex64) -> Complex64>> = match parts.next() {
             Some("+") => Some(Box::new(|x,y| x + y)),
             Some("-") => Some(Box::new(|x,y| x - y)),
             Some("*") => Some(Box::new(|x,y| x * y)),
@@ -90,7 +91,7 @@ impl FromStr for Elves {
 }
 
 impl Elves {
-    fn solve_for(&mut self, elf_name: &str) -> Result<i64, String> {
+    fn solve_for(&mut self, elf_name: &str) -> Result<Complex64, String> {
         while self.elves[self.elf_map[elf_name]].value.is_none() {
             for i in 0..self.elves.len() {
                 if self.elves[i].value.is_some() {
@@ -108,7 +109,7 @@ impl Elves {
         Ok(self.elves[self.elf_map[elf_name]].value.unwrap())
     }
 
-    fn compare(&mut self, elf_name: &str, value: i64) -> Ordering {
+    fn compare(&mut self, elf_name: &str, value: Complex64) -> (Complex64, Complex64) {
         self.elves[self.elf_map["humn"]].value = Some(value);
         while self.elves[self.elf_map[elf_name]].value.is_none() {
             for i in 0..self.elves.len() {
@@ -128,25 +129,21 @@ impl Elves {
         let elf2 = self.elves[self.elf_map[elf_name]].waiting_on[1].clone();
         let elf1_value = self.elves[self.elf_map[&elf1]].value.unwrap();
         let elf2_value = self.elves[self.elf_map[&elf2]].value.unwrap();
-        elf1_value.cmp(&elf2_value)
-
-
+        (elf1_value, elf2_value)
     }
 }
 
 
 fn part1(input: &str) -> i64 {
     let mut elves = input.parse::<Elves>().unwrap();
-    elves.solve_for("root").unwrap()
+    elves.solve_for("root").unwrap().re as i64
 }
 
 fn part2(input: &str) -> i64 {
-    for i in (3910938071000..3910938071100).step_by(1){
-        let mut elves = input.parse::<Elves>().unwrap();
-        let order = elves.compare("root", i);
-        println!("{}: {:?}", i, order);
-    }
-    0
+    let mut elves = input.parse::<Elves>().unwrap();
+    let (elf1, elf2) = elves.compare("root", Complex64::new(0.0, 1.0));
+    let result = (elf2.re - elf1.re) / elf1.im;
+    result.round() as i64
 }
 
 fn main() {
